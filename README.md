@@ -42,7 +42,7 @@ The web interface provides a structured selection form, allowing execution of pr
 
 | Component                   | Specification                                                                        |
 | --------------------------- | ------------------------------------------------------------------------------------ |
-| **Microcontroller**         | ESP32-S2 (native USB support required)                                               |
+| **Microcontroller**         | ESP32-S2 & ESP32-S3 (native USB support required)                                    |
 | **Development Environment** | Arduino IDE 1.8.19 or later                                                          |
 | **Core Version**            | ESP32 Arduino Core ≥ 3.3.0                                                           |
 | **Libraries**               | `WiFi.h`, `WebServer.h`, `DNSServer.h`, `USB.h`, `USBHIDKeyboard.h`, `USBHIDMouse.h` |
