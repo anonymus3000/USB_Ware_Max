@@ -8,7 +8,7 @@
 
 ## 1. Introduction
 
-**USB Ware** is a modular firmware developed for the **ESP32-S2** microcontroller, designed to transform the device into a **USB Human Interface Device (HID)** capable of executing programmable keyboard and mouse automation tasks.
+**USB Ware Max** is a modular firmware developed for the **ESP32-S3 Dev kit** microcontroller, designed to transform the device into a **USB Human Interface Device (HID)**(i.e. Bad USB) capable of executing programmable keyboard and mouse automation tasks.
 
 The firmware integrates an **embedded web server** allowing users to select and trigger multiple automation routines via a browser-based control panel.
 
@@ -31,6 +31,9 @@ http://10.0.0.1
 
 The web interface provides a structured selection form, allowing execution of predefined operational modes. A dynamic status display provides feedback regarding current activity or response.
 
+I also added a virtual mouse joystick/trackpad and direct type keyboard giving phone users more capabilities.
+I also added couple more built in shortcuts (which are great for both phone and PC users
+
 ---
 
 ## 3. Requirements
@@ -49,10 +52,6 @@ The web interface provides a structured selection form, allowing execution of pr
 
 ---
 
-## 4. Future Enhancements
-
-Potential extensions include:
-
-* Local payload storage using **SPIFFS**.
-* Over-The-Air (OTA) firmware updates.
-* Enhanced telemetry and console output.
+## #4. Note:
+Everything is vibe coded with Gemini (Claude didnt want to do it at all).
+Everything works on a ESP-32 S3 Developer Kit.
