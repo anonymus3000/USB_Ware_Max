@@ -4,8 +4,13 @@
 #include <DNSServer.h>
 #include <Preferences.h>
 #include <Arduino.h>
-#include "Configs.h"
+
+// Forward declarations
+void DuckyScript(const String &script);
+void startUSB(const String &dev);
+
 #include "USB_Tools.h"
+#include "Configs.h"
 
 DNSServer  dnsServer;
 WebServer  server(80);
@@ -73,8 +78,7 @@ void saveSettings() {
 }
 
 // =============================================================
-//  Authorization: when accessKey is set, /set and settings POST
-//  require a matching X-USBWARE-KEY header (or ?key= form field).
+//  Authorization
 // =============================================================
 bool authorized() {
   if (accessKey.length() == 0) return true;
