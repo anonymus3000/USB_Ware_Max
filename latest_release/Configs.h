@@ -1,456 +1,502 @@
 #ifndef CONFIGS_H
 #define CONFIGS_H
 
-// globals
-String customScript = "";
+#include <Arduino.h>
 
-// DNS Port
 const byte DNS_PORT = 53;
 
-// Wi-Fi AP settings
-String  inputSSID   = "USB Ware";                                 // SSID
-String  inputPASS   = "HID1000#";                                 // Password (leave empty for open network)
-int     inputCH     = 6;                                          // Channel
-bool    inputHidden = false;                                      // Hidden
-int     maxClients  = 1;                                          // MAX devices allowed
-uint8_t MAC[6]      = {0xDE, 0xAD, 0xBE, 0xEF, 0x01, 0x02};       // Custom MAC
-IPAddress local_IP(10, 0, 0, 1);                                  // IP
-IPAddress gateway(10, 0, 0, 1);                                   // Gateway
-IPAddress subnet(255, 255, 255, 0);                               // Subnet mask
+String  inputSSID   = "USB Ware";                                 
+String  inputPASS   = "HID1000#";                                 
+int     inputCH     = 6;                                          
+bool    inputHidden = false;                                      
+int     maxClients  = 1;                                          
+uint8_t MAC[6]      = {0xDE, 0xAD, 0xBE, 0xEF, 0x01, 0x02};       
+IPAddress local_IP(10, 0, 0, 1);                                  
+IPAddress gateway(10, 0, 0, 1);                                   
+IPAddress subnet(255, 255, 255, 0);                               
 
-// Optional shared secret. Leave empty to disable. When set, the firmware
 String  accessKey   = "";
-
-//--------------------------------------------------
 
 const char MainPage[] PROGMEM = R"rawliteral(
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>USB://WARE</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>USB://WARE - Control Hub</title>
 <style>
   :root{
     --bg:#04070a; --panel:#070d0c; --panel2:#0a1311; --edge:#103324;
     --fg:#4dffb0; --fg-dim:#1f8a5c; --ghost:#0e3a28;
     --amber:#ffb454; --err:#ff5d6c; --info:#5cd0ff;
     --glow:0 0 6px rgba(77,255,176,.35);
-    --mono:ui-monospace,"SFMono-Regular",Menlo,Consolas,"DejaVu Sans Mono",monospace;
+    --mono:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
   }
   *{box-sizing:border-box}
-  html,body{height:100%}
   body{
     margin:0; background:var(--bg); color:var(--fg);
-    font-family:var(--mono); font-size:14px; line-height:1.5;
-    padding:18px; min-height:100vh;
-    background-image:radial-gradient(120% 90% at 50% -10%,rgba(77,255,176,.06),transparent 60%);
+    font-family:var(--mono); font-size:13px; line-height:1.4;
+    padding:10px; min-height:100vh;
   }
-  /* CRT overlays */
-  body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:50;
-    background:repeating-linear-gradient(0deg,rgba(0,0,0,0) 0 2px,rgba(0,0,0,.18) 2px 3px);
-    mix-blend-mode:multiply;animation:flick 6s infinite steps(60)}
-  body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:51;
-    background:radial-gradient(130% 120% at 50% 50%,transparent 62%,rgba(0,0,0,.55) 100%)}
-  @keyframes flick{0%,97%{opacity:1}98%{opacity:.86}100%{opacity:1}}
-
-  .wrap{max-width:1040px;margin:0 auto;position:relative;z-index:1;opacity:0;animation:boot .5s .15s forwards}
-  @keyframes boot{to{opacity:1}}
-
+  .wrap{max-width:1100px;margin:0 auto}
   header{display:flex;align-items:center;gap:14px;flex-wrap:wrap;
     border:1px solid var(--edge);background:var(--panel);
-    padding:12px 16px;border-radius:10px;box-shadow:inset 0 0 30px rgba(77,255,176,.04)}
-  .brand{font-weight:700;letter-spacing:2px;text-shadow:0 0 10px var(--fg),0 0 22px var(--fg)}
-  .brand b{color:var(--amber);text-shadow:0 0 12px var(--amber)}
-  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-left:auto}
-  .chip{border:1px solid var(--ghost);border-radius:999px;padding:3px 10px;color:var(--fg-dim);font-size:12px}
-  .chip i{color:var(--fg);font-style:normal}
-  .dot{width:8px;height:8px;border-radius:50%;background:var(--fg);display:inline-block;
-    box-shadow:0 0 8px var(--fg);animation:pulse 1.6s infinite}
-  @keyframes pulse{50%{opacity:.35}}
-
-  .grid{display:grid;grid-template-columns:1.5fr 1fr;gap:14px;margin-top:14px}
-  @media(max-width:860px){.grid{grid-template-columns:1fr}}
-  .card{border:1px solid var(--edge);background:var(--panel);border-radius:10px;overflow:hidden}
-  .card>.bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;
-    padding:8px 10px;border-bottom:1px solid var(--edge);background:var(--panel2)}
-  .bar .tag{color:var(--fg-dim);font-size:12px;letter-spacing:1px;margin-right:auto}
-
-  button,select,.fbtn{font-family:var(--mono);font-size:13px;cursor:pointer;
+    padding:10px 14px;border-radius:8px;margin-bottom:10px}
+  .brand{font-weight:700;letter-spacing:2px}
+  .brand b{color:var(--amber)}
+  
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media(max-width:900px){.grid{grid-template-columns:1fr}}
+  
+  .card{border:1px solid var(--edge);background:var(--panel);border-radius:8px;overflow:hidden;margin-bottom:10px}
+  .bar{display:flex;align-items:center;gap:6px;padding:7px 10px;border-bottom:1px solid var(--edge);background:var(--panel2);flex-wrap:wrap}
+  .tag{color:var(--fg-dim);font-size:12px;letter-spacing:1px;margin-right:auto}
+  
+  button,select,.fbtn{font-family:var(--mono);font-size:12px;cursor:pointer;
     background:transparent;color:var(--fg);border:1px solid var(--ghost);
-    border-radius:6px;padding:6px 11px;transition:.15s;white-space:nowrap}
-  button:hover,select:hover,.fbtn:hover{border-color:var(--fg);box-shadow:var(--glow);background:rgba(77,255,176,.06)}
-  button.run{border-color:var(--fg);color:#04110b;background:var(--fg);font-weight:700;
-    text-shadow:none;box-shadow:0 0 14px rgba(77,255,176,.5)}
-  button.run:hover{background:#7dffc7}
-  button:disabled{opacity:.4;cursor:not-allowed;box-shadow:none;border-color:var(--ghost)}
-  select{padding-right:6px}
-  .key{width:108px;border:1px solid var(--ghost);background:var(--bg);color:var(--amber);
-    border-radius:6px;padding:6px 8px;font-family:var(--mono);font-size:12px}
-  .key::placeholder{color:#5a4a20}
+    border-radius:5px;padding:5px 9px;transition:.15s}
+  button:hover{border-color:var(--fg);box-shadow:var(--glow);background:rgba(77,255,176,.06)}
+  button.run{border-color:var(--fg);color:#04110b;background:var(--fg);font-weight:700}
+  button.abort{border-color:var(--err);color:var(--err);background:rgba(255,93,108,0.1);font-weight:700}
+  button.abort:hover{background:var(--err);color:#fff;box-shadow:0 0 8px rgba(255,93,108,0.5)}
+  
+  /* Mouse Input Area */
+  .mouse-area{display:flex;flex-direction:column;align-items:center;padding:10px;gap:8px}
+  #joystickCanvas{touch-action:none;background:var(--bg);border:1px solid var(--edge);border-radius:50%;cursor:pointer}
+  #trackpadArea{width:100%;height:120px;background:var(--bg);border:1px dashed var(--edge);border-radius:6px;
+    display:none;align-items:center;justify-content:center;color:var(--fg-dim);cursor:crosshair;user-select:none;touch-action:none}
+  
+  .mouse-controls{display:flex;gap:6px;width:100%;margin-top:4px;align-items:center}
+  .mouse-btns{display:flex;gap:4px;flex:1}
+  .mouse-btns button{flex:1;padding:7px}
+  .sens-box{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--fg-dim)}
+  .sens-box input{width:65px}
 
-  /* editor */
-  .edit{display:flex;background:var(--bg);max-height:52vh;min-height:300px}
-  .gutter{padding:10px 8px;text-align:right;color:var(--ghost);user-select:none;
-    background:var(--panel2);border-right:1px solid var(--edge);overflow:hidden;min-width:42px}
-  .gutter span{display:block}
-  #editor{flex:1;border:0;outline:0;resize:none;background:transparent;color:var(--fg);
-    font-family:var(--mono);font-size:14px;line-height:1.5;padding:10px 12px;
-    caret-color:var(--amber);white-space:pre;overflow:auto;tab-size:2}
-  #editor::selection{background:rgba(77,255,176,.25)}
-  .efoot{display:flex;gap:14px;padding:6px 12px;border-top:1px solid var(--edge);
-    background:var(--panel2);color:var(--fg-dim);font-size:12px}
-  .efoot .sp{margin-left:auto}
+  /* Shortcuts Matrix */
+  .combo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:5px;padding:8px}
+  .combo-grid button{padding:7px 4px;font-size:11px;background:var(--panel2);border-color:var(--edge);color:var(--amber)}
 
-  /* console */
-  #log{height:200px;overflow:auto;padding:10px 12px;background:var(--bg);font-size:13px}
-  #log .l{white-space:pre-wrap;word-break:break-word}
-  #log .t{color:var(--ghost)} .ok{color:var(--fg)} .er{color:var(--err)} .nf{color:var(--info)} .wn{color:var(--amber)}
-  #log .cursor{color:var(--amber);animation:bl 1s steps(2) infinite}
-  @keyframes bl{50%{opacity:0}}
+  /* Mobile Live Sync Type Box */
+  .type-box-wrap{padding:8px}
+  #liveType{width:100%;background:var(--bg);border:1px solid var(--ghost);color:var(--fg);padding:8px;border-radius:5px;font-family:var(--mono);font-size:16px}
 
-  /* saved slots */
-  .slots{padding:10px 12px;background:var(--bg)}
-  .slotrow{display:flex;gap:8px;margin-bottom:8px}
-  .slotrow input{flex:1;background:var(--bg);border:1px solid var(--ghost);border-radius:6px;
-    color:var(--fg);font-family:var(--mono);font-size:12px;padding:6px 8px}
-  ul.list{list-style:none;margin:0;padding:0;max-height:120px;overflow:auto}
-  ul.list li{display:flex;align-items:center;gap:8px;border:1px solid var(--edge);
-    border-radius:6px;padding:5px 8px;margin-bottom:6px;font-size:12px}
-  ul.list .nm{flex:1;color:var(--fg);cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  ul.list .nm:hover{text-decoration:underline}
-  ul.list .x{color:var(--err);border-color:transparent;padding:2px 7px}
-  .empty{color:var(--ghost);font-size:12px;padding:4px 2px}
+  /* Editor & Console */
+  #editor{width:100%;height:140px;background:var(--bg);color:var(--fg);border:0;padding:8px;font-family:var(--mono);resize:vertical}
+  #log{height:110px;overflow:auto;padding:8px;background:var(--bg);font-size:12px}
+  .l{margin-bottom:2px}
+  .t{color:var(--ghost)} .ok{color:var(--fg)} .er{color:var(--err)} .nf{color:var(--info)} .wn{color:var(--amber)}
+  
+  .slotrow{display:flex;gap:6px;margin-bottom:6px}
+  .slotrow input, .slotrow select{flex:1;background:var(--bg);border:1px solid var(--ghost);color:var(--fg);padding:5px 8px;border-radius:4px}
 
-  /* reference */
-  details.ref{margin-top:14px;border:1px solid var(--edge);border-radius:10px;background:var(--panel)}
-  details.ref>summary{cursor:pointer;padding:10px 14px;color:var(--fg-dim);letter-spacing:1px;list-style:none}
-  details.ref>summary::-webkit-details-marker{display:none}
+  details.ref{margin-bottom:10px;border:1px solid var(--edge);border-radius:8px;background:var(--panel)}
+  details.ref>summary{cursor:pointer;padding:8px 12px;color:var(--fg-dim);letter-spacing:1px;list-style:none}
   details.ref>summary::before{content:"[+] ";color:var(--fg)}
   details.ref[open]>summary::before{content:"[-] "}
-  .refgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;padding:0 14px 14px}
-  .refgrid h4{margin:10px 0 4px;color:var(--amber);font-size:12px;letter-spacing:1px}
-  .refgrid code{display:block;color:var(--fg);font-size:12px;padding:1px 0}
-  .refgrid code b{color:var(--fg-dim);font-weight:400}
+  .setgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;padding:0 12px 12px}
+  .setgrid label{display:flex;flex-direction:column;gap:3px;font-size:11px;color:var(--fg-dim)}
+  .setgrid input{background:var(--bg);border:1px solid var(--ghost);border-radius:5px;color:var(--fg);padding:6px;font-family:var(--mono)}
+  
   input[type=file]{display:none}
 </style>
 </head>
 <body>
 <div class="wrap">
-
   <header>
     <span class="brand">USB://<b>WARE</b></span>
-    <span class="chips">
-      <span class="chip">SSID <i id="cSsid">--</i></span>
-      <span class="chip">CH <i id="cCh">--</i></span>
-      <span class="chip"><span class="dot"></span> <i id="cLink">READY</i></span>
-    </span>
+    <button class="abort" onclick="sendCommand('ABORT'); log('[WARN] Abort signal triggered', 'wn');" style="margin-left:auto">⛔ ABORT SCRIPT</button>
   </header>
 
   <div class="grid">
-    <!-- EDITOR -->
-    <section class="card">
-      <div class="bar">
-        <span class="tag">PAYLOAD.duck</span>
-        <button class="run" onclick="run()" id="runBtn">&#9654; RUN</button>
-        <button onclick="clearEditor()">CLEAR</button>
-        <label class="fbtn" for="file">IMPORT</label>
-        <input type="file" id="file" accept=".txt,.duck,.dd" onchange="importFile(event)">
-        <button onclick="exportFile()">EXPORT</button>
-        <select id="examples" onchange="loadExample()">
-          <option value="">examples&#9662;</option>
-          <option value="hello">hello loop</option>
-          <option value="run">open + type</option>
-          <option value="count">counter (MATH/WHILE)</option>
-          <option value="jiggle">mouse anti-idle</option>
-          <option value="func">function demo (3.0)</option>
-        </select>
-        <input class="key" id="authKey" placeholder="key (opt)" autocomplete="off">
-      </div>
-      <div class="edit">
-        <div class="gutter" id="gutter"><span>1</span></div>
-        <textarea id="editor" spellcheck="false" autocapitalize="off" autocomplete="off"
-          placeholder="REM type DuckyScript here&#10;STRING hello world&#10;ENTER"></textarea>
-      </div>
-      <div class="efoot">
-        <span id="ln">LN 1</span>
-        <span id="ch">CH 0</span>
-        <span class="sp">tab = 2 spaces &middot; STRING_DELAY for slow hosts</span>
-      </div>
-    </section>
-
-    <!-- SIDE -->
-    <section class="card">
-      <div class="bar"><span class="tag">SAVED SLOTS</span></div>
-      <div class="slots">
-        <div class="slotrow">
-          <input id="slotName" placeholder="slot name" autocomplete="off">
-          <button onclick="saveSlot()">SAVE</button>
+    <!-- Left Column -->
+    <div>
+      <section class="card">
+        <div class="bar">
+          <span class="tag">MACRO EDITOR</span>
+          <label class="fbtn" for="fileInput">UPLOAD</label>
+          <input type="file" id="fileInput" accept=".txt,.duck,.dd" onchange="uploadFile(event)">
+          <button onclick="exportFile()">SAVE PC</button>
+          <button class="run" onclick="runScript()">RUN</button>
         </div>
-        <ul class="list" id="slotList"></ul>
-      </div>
-      <div class="bar"><span class="tag">CONSOLE</span><button onclick="clearLog()">CLR</button></div>
-      <div id="log"></div>
-    </section>
+        <textarea id="editor" placeholder="STRING Hello World&#10;ENTER"></textarea>
+      </section>
+
+      <section class="card">
+        <div class="bar"><span class="tag">SAVED SLOTS</span></div>
+        <div style="padding:8px;">
+          <div class="slotrow">
+            <select id="scriptSelector" onchange="loadSelectedScript()">
+              <option value="">-- Select Saved Script --</option>
+            </select>
+          </div>
+          <div class="slotrow">
+            <input id="slotName" placeholder="Slot Name">
+            <button onclick="saveSlot()">SAVE</button>
+            <button onclick="deleteSlot()" style="color:var(--err)">DEL</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="bar"><span class="tag">QUICK SHORTCUTS</span></div>
+        <div class="combo-grid">
+          <button onclick="sendCommand('CTRL c')">CTRL+C</button>
+          <button onclick="sendCommand('CTRL v')">CTRL+V</button>
+          <button onclick="sendCommand('CTRL x')">CTRL+X</button>
+          <button onclick="sendCommand('CTRL a')">CTRL+A</button>
+          <button onclick="sendCommand('CTRL s')">CTRL+S</button>
+          <button onclick="sendCommand('ALT f4')">ALT+F4</button>
+          <button onclick="sendCommand('ALT Tab')">ALT+TAB</button>
+          <button onclick="sendCommand('GUI d')">WIN+D</button>
+          <button onclick="sendCommand('CTRL SHIFT ESC')">TASKMGR</button>
+          <button onclick="sendCommand('GUI r')">RUN</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="bar"><span class="tag">OFFICE APPS LAUNCHER</span></div>
+        <div class="combo-grid">
+          <button onclick="sendCommand('GUI CTRL ALT SHIFT w')">WORD</button>
+          <button onclick="sendCommand('GUI CTRL ALT SHIFT x')">EXCEL</button>
+          <button onclick="sendCommand('GUI CTRL ALT SHIFT p')">POWERPOINT</button>
+          <button onclick="sendCommand('GUI CTRL ALT SHIFT o')">OUTLOOK</button>
+          <button onclick="sendCommand('GUI CTRL ALT SHIFT t')">TEAMS</button>
+          <button onclick="sendCommand('GUI CTRL ALT SHIFT n')">ONENOTE</button>
+        </div>
+      </section>
+
+      <!-- System & Media Controls placed underneath Office App Launcher -->
+      <section class="card">
+        <div class="bar"><span class="tag">SYSTEM & MEDIA CONTROLS</span></div>
+        <div class="combo-grid">
+          <button onclick="sendCommand('GUI r\nDELAY 500\nSTRING rundll32.exe powrprof.dll,SetSuspendState 0,1,0\nENTER')">💤 SLEEP</button>
+          <button onclick="sendCommand('GUI r\nDELAY 500\nSTRING shutdown /r /t 0\nENTER')">🔄 RESTART</button>
+          <button onclick="sendCommand('GUI e')">📁 EXPLORER</button>
+          <button onclick="sendCommand('GUI r\nDELAY 500\nSTRING calc\nENTER')">🧮 CALC</button>
+          <button onclick="sendCommand('GUI r\nDELAY 500\nSTRING powershell -c \"(New-Object -ComObject WScript.Shell).SendKeys([char]173)\"\nENTER')">🔇 MUTE</button>
+          <button onclick="sendCommand('GUI r\nDELAY 500\nSTRING powershell -c \"(New-Object -ComObject WScript.Shell).SendKeys([char]174)\"\nENTER')">🔉 VOL -</button>
+          <button onclick="sendCommand('GUI r\nDELAY 500\nSTRING powershell -c \"(New-Object -ComObject WScript.Shell).SendKeys([char]175)\"\nENTER')">🔊 VOL +</button>
+        </div>
+      </section>
+    </div>
+
+    <!-- Right Column -->
+    <div>
+      <!-- Mobile Direct-Type at the top of the right column -->
+      <section class="card">
+        <div class="bar"><span class="tag">MOBILE DIRECT-TYPE</span></div>
+        <div class="type-box-wrap">
+          <input id="liveType" type="text" placeholder="Tap to type live..." autocomplete="off" autocapitalize="off">
+        </div>
+      </section>
+
+      <!-- Virtual Mouse underneath Direct-Type -->
+      <section class="card">
+        <div class="bar">
+          <span class="tag">VIRTUAL MOUSE</span>
+          <select id="mouseMode" onchange="toggleMouseMode()" style="padding:2px 5px">
+            <option value="joystick">Joystick Mode</option>
+            <option value="trackpad">Trackpad Mode</option>
+          </select>
+        </div>
+        <div class="mouse-area">
+          <canvas id="joystickCanvas" width="110" height="110"></canvas>
+          <div id="trackpadArea">Drag here for trackpad</div>
+          <div class="mouse-controls">
+            <div class="sens-box">
+              Sens: <input type="range" id="sensRange" min="0.5" max="3.0" step="0.5" value="1.0">
+            </div>
+            <div class="mouse-btns">
+              <button onclick="mouseClick('LEFT')">LMB</button>
+              <button onclick="mouseClick('MIDDLE')">MMB</button>
+              <button onclick="mouseClick('RIGHT')">RMB</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Virtual Keyboard underneath Virtual Mouse -->
+      <section class="card">
+        <div class="bar"><span class="tag">VIRTUAL KEYBOARD</span></div>
+        <div style="padding:6px; display:flex; gap:4px; flex-wrap:wrap; justify-content:center">
+          <button class="fbtn" onclick="sendCommand('ESC')">ESC</button>
+          <button class="fbtn" onclick="sendCommand('TAB')">TAB</button>
+          <button class="fbtn" onclick="sendCommand('BACKSPACE')">BKSP</button>
+          <button class="fbtn" onclick="sendCommand('ENTER')">ENTER</button>
+          <button class="fbtn" onclick="sendCommand('SPACE')">SPACE</button>
+          <button class="fbtn" onclick="sendCommand('UP')">&uarr;</button>
+          <button class="fbtn" onclick="sendCommand('DOWN')">&darr;</button>
+          <button class="fbtn" onclick="sendCommand('LEFT')">&larr;</button>
+          <button class="fbtn" onclick="sendCommand('RIGHT')">&rarr;</button>
+        </div>
+      </section>
+    </div>
   </div>
 
-  <!-- REFERENCE -->
+  <details class="ref" ontoggle="if(this.open)loadSettings()">
+    <summary>DEVICE & WIFI SETTINGS</summary>
+    <div class="setgrid">
+      <label>SSID<input id="s_ssid"></label>
+      <label>PASSWORD<input id="s_pass"></label>
+      <label>CHANNEL<input id="s_ch" type="number" min="1" max="13"></label>
+      <label>MAX CLIENTS<input id="s_max" type="number" min="1" max="8"></label>
+      <label>IP ADDRESS<input id="s_ip"></label>
+      <label>GATEWAY<input id="s_gw"></label>
+      <label>STRING DELAY (ms)<input id="s_sd" type="number" min="0"></label>
+    </div>
+    <div style="padding:0 12px 12px; display:flex; gap:8px;">
+      <button class="run" onclick="saveSettings()">SAVE SETTINGS</button>
+      <button onclick="loadSettings()">RELOAD</button>
+      <span id="setStat" style="font-size:11px;color:var(--fg-dim);align-self:center;margin-left:auto"></span>
+    </div>
+  </details>
+
   <details class="ref">
-    <summary>COMMAND REFERENCE</summary>
-    <div class="refgrid">
-      <div>
-        <h4>TEXT</h4>
-        <code>STRING <b>text</b></code>
-        <code>STRINGLN <b>text</b></code>
-        <code>PRINT <b>text</b> <b>(serial)</b></code>
-      </div>
-      <div>
-        <h4>KEYS</h4>
-        <code>ENTER TAB ESC SPACE</code>
-        <code>UP DOWN LEFT RIGHT</code>
-        <code>HOME END DELETE F1..F12</code>
-        <code>CTRL c &middot; CTRL ALT DELETE</code>
-        <code>GUI r &middot; HOLD/RELEASE <b>key</b></code>
-      </div>
-      <div>
-        <h4>TIMING</h4>
-        <code>DELAY <b>ms</b> &middot; WAIT <b>ms</b></code>
-        <code>DEFAULT_DELAY <b>ms</b></code>
-        <code>STRING_DELAY <b>ms</b></code>
-        <code>REPEAT <b>n</b></code>
-      </div>
-      <div>
-        <h4>VARIABLES</h4>
-        <code>VAR <b>x</b> = 5  (or VAR $x = 5)</code>
-        <code>MATH <b>x</b> = (x + 1) * 2</code>
-        <code>DEFINE <b>#URL</b> example.com</code>
-        <code>STRING ${x}  &middot;  STRING #URL</code>
-      </div>
-      <div>
-        <h4>FLOW</h4>
-        <code>IF x &gt; 3 ... ELSE ... ENDIF</code>
-        <code>IF (x &gt; 3) THEN ... END_IF</code>
-        <code>WHILE x &lt; 9 ... ENDWHILE</code>
-        <code>LOOP <b>n</b> ... ENDLOOP</code>
-        <code>== != &gt; &lt; &gt;= &lt;=</code>
-      </div>
-      <div>
-        <h4>FUNCTIONS</h4>
-        <code>FUNCTION NAME ... ENDFUNCTION</code>
-        <code>CALL NAME  &middot;  NAME()</code>
-        <code>RETURN</code>
-      </div>
-      <div>
-        <h4>MOUSE</h4>
-        <code>MOUSE MOVE <b>x</b> <b>y</b></code>
-        <code>MOUSE CLICK <b>LEFT|RIGHT|MIDDLE</b></code>
-        <code>MOUSE SCROLL <b>n</b></code>
+    <summary>EXPANDED SYNTAX CHEAT SHEET & AI PROMPT</summary>
+    <div style="padding:12px;font-size:11px;color:var(--fg-dim);line-height:1.6">
+      <b style="color:var(--amber)">Text Input:</b> <code>STRING text</code> | <code>STRINGLN text</code> | <code>DELAY 500</code><br>
+      <b style="color:var(--amber)">Hotkeys & Apps:</b> <code>CTRL c</code> | <code>ALT f4</code> | <code>GUI r</code> | <code>GUI CTRL ALT SHIFT w</code> (Word)<br>
+      <b style="color:var(--amber)">Mouse:</b> <code>MOUSE MOVE x y</code> | <code>MOUSE CLICK LEFT/RIGHT/MIDDLE</code><br>
+      <b style="color:var(--amber)">Flow Control:</b> <code>VAR $x = 5</code> | <code>LOOP 3 ... ENDLOOP</code> | <code>WHILE x > 0 ... ENDWHILE</code>
+      <hr style="border:0;border-top:1px solid var(--edge);margin:8px 0">
+      <b style="color:var(--fg)">AI Prompt Template to Generate Scripts:</b>
+      <div style="background:var(--bg);padding:8px;border-radius:4px;margin-top:4px;user-select:all;color:var(--fg)">
+        Act as an ESP32 USB HID DuckyScript developer. Write a script for: [DESCRIBE YOUR TASK HERE]. Use only valid commands: STRING, STRINGLN, DELAY ms, ENTER, TAB, ESC, CTRL/ALT/GUI/SHIFT combos, MOUSE MOVE x y, MOUSE CLICK LEFT/RIGHT, LOOP n ... ENDLOOP.
       </div>
     </div>
   </details>
 
-  <!-- SETTINGS -->
-  <details class="ref" id="setDrawer" ontoggle="if(this.open)loadSettings()">
-    <summary>DEVICE SETTINGS</summary>
-    <div style="padding:0 14px 14px">
-      <div class="setstat" id="setStat">clients: -- &middot; free heap: -- B</div>
-      <div class="setgrid">
-        <label>SSID<input id="s_ssid" autocomplete="off"></label>
-        <label>PASSWORD<input id="s_pass" autocomplete="off"></label>
-        <label>CHANNEL (1-13)<input id="s_ch" type="number" min="1" max="13"></label>
-        <label>MAX CLIENTS (1-8)<input id="s_max" type="number" min="1" max="8"></label>
-        <label class="cbx"><input id="s_hidden" type="checkbox"> HIDDEN SSID</label>
-        <label>ACCESS KEY (blank=off)<input id="s_akey" autocomplete="off"></label>
-        <label>MAC<input id="s_mac" autocomplete="off" placeholder="DE:AD:BE:EF:01:02"></label>
-        <label>IP<input id="s_ip" autocomplete="off"></label>
-        <label>GATEWAY<input id="s_gw" autocomplete="off"></label>
-        <label>SUBNET<input id="s_sn" autocomplete="off"></label>
-        <label>DEFAULT_DELAY ms<input id="s_dd" type="number" min="0"></label>
-        <label>STRING_DELAY ms<input id="s_sd" type="number" min="0"></label>
-      </div>
-      <div class="setrow">
-        <label class="cbx"><input id="s_reboot" type="checkbox" checked> reboot to apply network changes</label>
-        <button onclick="loadSettings()">RELOAD</button>
-        <button class="run" onclick="saveSettings()">SAVE</button>
-      </div>
-      <div class="warn" id="setWarn"></div>
-    </div>
-  </details>
+  <section class="card">
+    <div class="bar"><span class="tag">CONSOLE</span><button onclick="document.getElementById('log').innerHTML=''">CLR</button></div>
+    <div id="log"></div>
+  </section>
 </div>
 
-<style>
-  .setstat{color:var(--fg-dim);font-size:12px;margin:4px 0 12px}
-  .setgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
-  .setgrid label{display:flex;flex-direction:column;gap:4px;font-size:11px;color:var(--fg-dim);letter-spacing:1px}
-  .setgrid input[type=text],.setgrid input[type=number],.setgrid input:not([type]){
-    background:var(--bg);border:1px solid var(--ghost);border-radius:6px;color:var(--fg);
-    font-family:var(--mono);font-size:13px;padding:7px 9px}
-  .setgrid input:focus{outline:0;border-color:var(--fg);box-shadow:var(--glow)}
-  label.cbx{flex-direction:row !important;align-items:center;gap:8px;color:var(--fg)}
-  label.cbx input{width:auto}
-  .setrow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:14px}
-  .setrow .cbx{margin-right:auto}
-  .warn{margin-top:10px;color:var(--amber);font-size:12px;min-height:16px}
-</style>
-
 <script>
-var EX = {
-  hello:"REM print a line a few times\nDEFAULT_DELAY 40\nLOOP 3\n  STRINGLN hello from usb ware\nENDLOOP",
-  run:"REM open the run dialog and type (does NOT press enter)\nGUI r\nDELAY 400\nSTRING notepad\nREM remove the REM on the next line to launch:\nREM ENTER",
-  count:"REM count down using arithmetic + a while loop\nVAR n = 5\nWHILE n > 0\n  STRING tick \nMATH n = n - 1\nENDWHILE\nSTRINGLN done",
-  jiggle:"REM nudge the cursor to stay active\nLOOP 10\n  MOUSE MOVE 8 0\n  DELAY 500\n  MOUSE MOVE -8 0\n  DELAY 500\nENDLOOP",
-  func:"REM DuckyScript 3.0 style function\nVAR count = 3\nbanner()\nFUNCTION banner()\n  WHILE count > 0\n    STRING *\nMATH count = count - 1\n  ENDWHILE\n  STRINGLN  ok\nENDFUNCTION"
-};
-var SKEY = "usbware.scripts";
-var ed = document.getElementById('editor');
-var gutter = document.getElementById('gutter');
-
 function now(){var d=new Date();return d.toTimeString().slice(0,8);}
-function log(msg,cls){
+function log(msg, cls){
   var box=document.getElementById('log');
   var line=document.createElement('div'); line.className='l';
   line.innerHTML='<span class="t">'+now()+' </span><span class="'+(cls||'ok')+'">'+msg+'</span>';
   box.appendChild(line); box.scrollTop=box.scrollHeight;
 }
-function clearLog(){document.getElementById('log').innerHTML='';}
-function clearEditor(){ed.value='';syncGutter();}
 
-function syncGutter(){
-  var lines=ed.value.split('\n').length;
-  var html=''; for(var i=1;i<=lines;i++) html+='<span>'+i+'</span>';
-  gutter.innerHTML=html||'<span>1</span>';
-  document.getElementById('ln').textContent='LN '+lines;
-  document.getElementById('ch').textContent='CH '+ed.value.length;
+async function sendCommand(scriptBody) {
+  log('[INFO] Transmitting action...', 'nf');
+  try {
+    let res = await fetch('/set', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: 'customScript=' + encodeURIComponent(scriptBody)
+    });
+    let txt = await res.text();
+    if(res.ok) log('[OK] ' + (txt || 'Executed successfully'), 'ok');
+    else log('[ERR] HTTP ' + res.status + ': ' + txt, 'er');
+  } catch(e) { log('[ERR] Link failure: ' + e, 'er'); }
 }
-ed.addEventListener('input',syncGutter);
-ed.addEventListener('scroll',function(){gutter.scrollTop=ed.scrollTop;});
-ed.addEventListener('keydown',function(e){
-  if(e.key==='Tab'){e.preventDefault();
-    var s=ed.selectionStart,en=ed.selectionEnd;
-    ed.value=ed.value.slice(0,s)+'  '+ed.value.slice(en);
-    ed.selectionStart=ed.selectionEnd=s+2; syncGutter();}
+
+function runScript() {
+  let val = document.getElementById('editor').value;
+  if(!val.trim()){ log('[WARN] Editor is empty', 'wn'); return; }
+  sendCommand(val);
+}
+
+function mouseClick(btn) {
+  sendCommand(`MOUSE CLICK ${btn}`);
+}
+
+function toggleMouseMode() {
+  let mode = document.getElementById('mouseMode').value;
+  let joy = document.getElementById('joystickCanvas');
+  let track = document.getElementById('trackpadArea');
+  if(mode === 'trackpad') {
+    joy.style.display = 'none';
+    track.style.display = 'flex';
+  } else {
+    joy.style.display = 'block';
+    track.style.display = 'none';
+  }
+}
+
+let trackArea = document.getElementById('trackpadArea');
+let isTracking = false, tLastX = 0, tLastY = 0;
+trackArea.addEventListener('pointerdown', e => { isTracking = true; tLastX = e.clientX; tLastY = e.clientY; });
+window.addEventListener('pointerup', () => { isTracking = false; });
+window.addEventListener('pointermove', e => {
+  if(!isTracking || document.getElementById('mouseMode').value !== 'trackpad') return;
+  let sens = parseFloat(document.getElementById('sensRange').value);
+  let dx = Math.round((e.clientX - tLastX) * 1.5 * sens);
+  let dy = Math.round((e.clientY - tLastY) * 1.5 * sens);
+  tLastX = e.clientX; tLastY = e.clientY;
+  if(dx !== 0 || dy !== 0) sendCommand(`MOUSE MOVE ${dx} ${dy}`);
 });
 
-function loadExample(){
-  var sel=document.getElementById('examples'); var k=sel.value;
-  if(k&&EX[k]){ed.value=EX[k];syncGutter();log('loaded example: '+k,'nf');}
-  sel.value='';
-}
-function importFile(e){
-  var f=e.target.files[0]; if(!f)return;
-  var r=new FileReader();
-  r.onload=function(ev){ed.value=ev.target.result;syncGutter();log('imported '+f.name+' ('+f.size+'B)','nf');};
-  r.readAsText(f); e.target.value='';
-}
-function exportFile(){
-  var blob=new Blob([ed.value],{type:'text/plain'});
-  var a=document.createElement('a');
-  a.href=URL.createObjectURL(blob); a.download='payload.duck'; a.click();
-  URL.revokeObjectURL(a.href); log('exported payload.duck','nf');
-}
+const canvas = document.getElementById('joystickCanvas');
+const ctx = canvas.getContext('2d');
+let cx = 55, cy = 55, r = 40;
+let stickX = cx, stickY = cy;
+let joystickActive = false;
 
-/* ---- saved slots (browser localStorage) ---- */
-function getSlots(){try{return JSON.parse(localStorage.getItem(SKEY))||{};}catch(e){return {};}}
-function setSlots(o){localStorage.setItem(SKEY,JSON.stringify(o));}
-function renderSlots(){
-  var o=getSlots(),ul=document.getElementById('slotList'),keys=Object.keys(o);
-  ul.innerHTML='';
-  if(!keys.length){ul.innerHTML='<div class="empty">no saved scripts</div>';return;}
-  keys.forEach(function(k){
-    var li=document.createElement('li');
-    var nm=document.createElement('span'); nm.className='nm'; nm.textContent=k;
-    nm.onclick=function(){ed.value=o[k];syncGutter();log('loaded slot: '+k,'nf');};
-    var x=document.createElement('button'); x.className='x'; x.textContent='DEL';
-    x.onclick=function(){var s=getSlots();delete s[k];setSlots(s);renderSlots();log('deleted slot: '+k,'wn');};
-    li.appendChild(nm); li.appendChild(x); ul.appendChild(li);
-  });
+function drawJoystick(x, y) {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(77,255,176,0.04)'; ctx.fill();
+  ctx.strokeStyle = 'var(--edge)'; ctx.lineWidth = 2; ctx.stroke();
+  
+  ctx.beginPath(); ctx.arc(x, y, 18, 0, Math.PI * 2);
+  ctx.fillStyle = joystickActive ? 'var(--fg)' : 'var(--fg-dim)'; ctx.fill();
 }
-function saveSlot(){
-  var n=document.getElementById('slotName').value.trim();
-  if(!n){log('slot name required','wn');return;}
-  if(!ed.value.trim()){log('nothing to save','wn');return;}
-  var o=getSlots(); o[n]=ed.value; setSlots(o);
-  document.getElementById('slotName').value=''; renderSlots();
-  log('saved slot: '+n,'ok');
-}
+drawJoystick(cx, cy);
 
-/* ---- run ---- */
-async function run(){
-  var body=ed.value;
-  if(!body.trim()){log('editor is empty','wn');return;}
-  var btn=document.getElementById('runBtn'); btn.disabled=true;
-  document.getElementById('cLink').textContent='SENDING';
-  log('&gt; transmitting '+body.split('\n').length+' lines ('+body.length+'B)...','nf');
-  var hdr={'Content-Type':'application/x-www-form-urlencoded'};
-  var k=document.getElementById('authKey').value.trim(); if(k) hdr['X-USBWARE-KEY']=k;
-  try{
-    var res=await fetch('/set',{method:'POST',headers:hdr,
-      body:'customScript='+encodeURIComponent(body)});
-    var txt=await res.text();
-    if(res.ok){log('&lt; '+(txt||'OK')+' <span class="cursor">_</span>','ok');
-      document.getElementById('cLink').textContent='READY';}
-    else{log('&lt; HTTP '+res.status+': '+txt,'er');
-      document.getElementById('cLink').textContent='ERR '+res.status;}
-  }catch(err){
-    log('&lt; link failure: '+err,'er');
-    document.getElementById('cLink').textContent='OFFLINE';
+function handleJoystickMove(clientX, clientY) {
+  let rect = canvas.getBoundingClientRect();
+  let dx = clientX - (rect.left + cx);
+  let dy = clientY - (rect.top + cy);
+  let dist = Math.sqrt(dx*dx + dy*dy);
+  if(dist > r) {
+    dx = (dx / dist) * r;
+    dy = (dy / dist) * r;
   }
-  btn.disabled=false;
+  stickX = cx + dx;
+  stickY = cy + dy;
+  drawJoystick(stickX, stickY);
 }
 
-/* ---- device settings ---- */
-function authHeaders(base){
-  var h=base||{}; var k=document.getElementById('authKey').value.trim();
-  if(k) h['X-USBWARE-KEY']=k; return h;
+canvas.addEventListener('pointerdown', e => { joystickActive = true; handleJoystickMove(e.clientX, e.clientY); });
+window.addEventListener('pointermove', e => { if(joystickActive && document.getElementById('mouseMode').value === 'joystick') handleJoystickMove(e.clientX, e.clientY); });
+window.addEventListener('pointerup', () => {
+  if(joystickActive) {
+    joystickActive = false;
+    stickX = cx; stickY = cy;
+    drawJoystick(cx, cy);
+  }
+});
+
+setInterval(() => {
+  if(joystickActive && document.getElementById('mouseMode').value === 'joystick') {
+    let sens = parseFloat(document.getElementById('sensRange').value);
+    let dx = Math.round((stickX - cx) * 0.2 * sens);
+    let dy = Math.round((stickY - cy) * 0.2 * sens);
+    if(dx !== 0 || dy !== 0) sendCommand(`MOUSE MOVE ${dx} ${dy}`);
+  }
+}, 50);
+
+/* --- Mobile Direct Type (Fixed re-focus / closing bug) --- */
+let lastLen = 0;
+let liveInput = document.getElementById('liveType');
+liveInput.addEventListener('focus', () => { lastLen = liveInput.value.length; });
+liveInput.addEventListener('input', e => {
+  let val = e.target.value;
+  if(val.length > lastLen) {
+    let added = val.slice(lastLen);
+    sendCommand(`STRING ${added}`);
+  } else if(val.length < lastLen) {
+    let diff = lastLen - val.length;
+    let bk = "";
+    for(let i=0; i<diff; i++) bk += "BACKSPACE\n";
+    sendCommand(bk.trim());
+  }
+  lastLen = val.length;
+  // Removed automatic value wiping so mobile keyboard stays open and stable!
+});
+
+function uploadFile(e) {
+  let f = e.target.files[0]; if(!f) return;
+  let r = new FileReader();
+  r.onload = function(ev) {
+    document.getElementById('editor').value = ev.target.result;
+    document.getElementById('slotName').value = f.name.replace(/\.[^/.]+$/, "");
+    log('[INFO] Uploaded file: ' + f.name, 'nf');
+  };
+  r.readAsText(f);
+  e.target.value = '';
 }
-async function loadSettings(){
-  document.getElementById('setWarn').textContent='';
-  try{
-    var r=await fetch('/api/settings',{headers:authHeaders({})});
-    if(!r.ok){document.getElementById('setWarn').textContent='load failed: HTTP '+r.status;return;}
-    var s=await r.json();
-    var set=function(id,v){document.getElementById(id).value=v;};
-    set('s_ssid',s.ssid); set('s_pass',s.pass); set('s_ch',s.ch); set('s_max',s.max);
-    set('s_akey',s.akey); set('s_mac',s.mac); set('s_ip',s.ip); set('s_gw',s.gw);
-    set('s_sn',s.sn); set('s_dd',s.ddelay); set('s_sd',s.sdelay);
-    document.getElementById('s_hidden').checked=!!s.hidden;
-    document.getElementById('setStat').innerHTML='clients: '+s.clients+' &middot; free heap: '+s.heap+' B';
-    log('settings loaded','nf');
-  }catch(e){document.getElementById('setWarn').textContent='load error: '+e;}
+
+function exportFile() {
+  let val = document.getElementById('editor').value;
+  let blob = new Blob([val], {type:'text/plain'});
+  let a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = 'payload.duck'; a.click();
+  URL.revokeObjectURL(a.href);
+  log('[INFO] Exported payload to PC', 'nf');
 }
-async function saveSettings(){
-  var g=function(id){return document.getElementById(id).value;};
-  var p=new URLSearchParams();
-  p.set('ssid',g('s_ssid')); p.set('pass',g('s_pass')); p.set('ch',g('s_ch'));
-  p.set('max',g('s_max')); p.set('akey',g('s_akey')); p.set('mac',g('s_mac'));
-  p.set('ip',g('s_ip')); p.set('gw',g('s_gw')); p.set('sn',g('s_sn'));
-  p.set('ddelay',g('s_dd')); p.set('sdelay',g('s_sd'));
-  p.set('hidden',document.getElementById('s_hidden').checked?'1':'0');
-  var reboot=document.getElementById('s_reboot').checked; p.set('reboot',reboot?'1':'0');
-  document.getElementById('setWarn').textContent='';
-  try{
-    var r=await fetch('/api/settings',{method:'POST',
-      headers:authHeaders({'Content-Type':'application/x-www-form-urlencoded'}),body:p.toString()});
-    var t=await r.text();
-    if(r.ok){ log('settings: '+t,'ok');
-      if(reboot) document.getElementById('setWarn').textContent='Device rebooting. Reconnect to the (possibly renamed) AP, then reopen this page.';
-    } else { log('settings save: HTTP '+r.status+' '+t,'er');
-      document.getElementById('setWarn').textContent='save failed: HTTP '+r.status; }
-  }catch(e){
-    if(reboot){ log('settings saved; device dropped link on reboot','wn');
-      document.getElementById('setWarn').textContent='Saved. Device is rebooting; reconnect to the AP.'; }
-    else { document.getElementById('setWarn').textContent='save error: '+e; }
+
+function getSlots() {
+  try { return JSON.parse(localStorage.getItem('usbware_scripts') || '{}'); } catch(e) { return {}; }
+}
+function renderSlots() {
+  let s = getSlots(), sel = document.getElementById('scriptSelector');
+  sel.innerHTML = '<option value="">-- Select Saved Script --</option>';
+  for(let k in s) {
+    let opt = document.createElement('option'); opt.value = k; opt.textContent = k;
+    sel.appendChild(opt);
   }
 }
+function saveSlot() {
+  let name = document.getElementById('slotName').value.trim();
+  let code = document.getElementById('editor').value.trim();
+  if(!name || !code) { log('[WARN] Enter slot name and script code', 'wn'); return; }
+  let s = getSlots(); s[name] = code;
+  localStorage.setItem('usbware_scripts', JSON.stringify(s));
+  renderSlots();
+  log('[OK] Saved slot: ' + name, 'ok');
+}
+function loadSelectedScript() {
+  let sel = document.getElementById('scriptSelector').value;
+  if(!sel) return;
+  let s = getSlots();
+  if(s[sel]) {
+    document.getElementById('editor').value = s[sel];
+    document.getElementById('slotName').value = sel;
+    log('[INFO] Loaded slot: ' + sel, 'nf');
+  }
+}
+function deleteSlot() {
+  let sel = document.getElementById('scriptSelector').value;
+  if(!sel) return;
+  let s = getSlots(); delete s[sel];
+  localStorage.setItem('usbware_scripts', JSON.stringify(s));
+  renderSlots();
+  document.getElementById('editor').value = '';
+  document.getElementById('slotName').value = '';
+  log('[WARN] Deleted slot: ' + sel, 'wn');
+}
 
-/* ---- boot ---- */
-(function(){
-  document.getElementById('cSsid').textContent='USB Ware';
-  document.getElementById('cCh').textContent='6';
-  syncGutter(); renderSlots();
-  var seq=['initializing HID bridge...','USB descriptor: KEYBOARD+MOUSE','AP up @ 10.0.0.1','interpreter v3-compat ready'];
-  var i=0;(function step(){if(i<seq.length){log(seq[i++],'nf');setTimeout(step,160);}})();
-})();
+async function loadSettings() {
+  try {
+    let r = await fetch('/api/settings');
+    if(r.ok) {
+      let s = await r.json();
+      document.getElementById('s_ssid').value = s.ssid;
+      document.getElementById('s_pass').value = s.pass;
+      document.getElementById('s_ch').value = s.ch;
+      document.getElementById('s_max').value = s.max;
+      document.getElementById('s_ip').value = s.ip;
+      document.getElementById('s_gw').value = s.gw;
+      document.getElementById('s_sd').value = s.sdelay;
+      document.getElementById('setStat').textContent = `Heap: ${s.heap}B`;
+      log('[INFO] Settings loaded', 'nf');
+    }
+  } catch(e) { log('[ERR] Settings error: ' + e, 'er'); }
+}
+
+async function saveSettings() {
+  let p = new URLSearchParams();
+  p.set('ssid', document.getElementById('s_ssid').value);
+  p.set('pass', document.getElementById('s_pass').value);
+  p.set('ch', document.getElementById('s_ch').value);
+  p.set('max', document.getElementById('s_max').value);
+  p.set('ip', document.getElementById('s_ip').value);
+  p.set('gw', document.getElementById('s_gw').value);
+  p.set('sdelay', document.getElementById('s_sd').value);
+  p.set('reboot', '1');
+  try {
+    let r = await fetch('/api/settings', {method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body:p.toString()});
+    if(r.ok) log('[OK] Settings saved. Rebooting...', 'ok');
+  } catch(e) { log('[ERR] Save error: ' + e, 'er'); }
+}
+
+renderSlots();
 </script>
 </body>
 </html>
